@@ -37,6 +37,11 @@ export interface LoyaltyCycle {
   completedAt: string | null;
 }
 
+export interface CycleStamp {
+  /** Un sello de un corte fiado todavía no pagado — se ve distinto (no es un check normal). */
+  isFiadoUnpaid: boolean;
+}
+
 export interface CardStatus {
   cutsRequiredForReward: number;
   stampsSinceReward: number;
@@ -52,6 +57,9 @@ export interface CardStatus {
   /** Historial completo de ciclos (sin límite): cada uno se cierra al entregar
    * un corte gratis por lealtad y el conteo arranca de cero para el siguiente. */
   cycles: LoyaltyCycle[];
+  /** Los sellos del ciclo actual (en progreso), en orden, para pintar cada
+   * círculo según su estado real (normal vs. fiado sin pagar). */
+  currentCycleStamps: CycleStamp[];
 }
 
 export async function computeCardStatus(
@@ -62,7 +70,7 @@ export async function computeCardStatus(
   const cuts = await prisma.cut.findMany({
     where: { clientId },
     orderBy: { date: "asc" },
-    select: { type: true, date: true },
+    select: { type: true, date: true, isPaid: true },
   });
 
   const required = settings.cutsRequiredForReward;
@@ -73,25 +81,25 @@ export async function computeCardStatus(
   // hay límite de cuántos ciclos se acumulen — se derivan de todo el
   // historial del cliente.
   const cycles: LoyaltyCycle[] = [];
-  let stampsInCycle = 0;
+  let stampsInCycle: CycleStamp[] = [];
   for (const cut of cuts) {
     if (cut.type === "NORMAL" || cut.type === "FIADO") {
-      stampsInCycle += 1;
+      stampsInCycle.push({ isFiadoUnpaid: cut.type === "FIADO" && !cut.isPaid });
     } else if (cut.type === "REWARD_FREE") {
       cycles.push({
         cycleNumber: cycles.length + 1,
-        stamps: stampsInCycle,
+        stamps: stampsInCycle.length,
         stampsRequired: required,
         completed: true,
         completedAt: cut.date.toISOString(),
       });
-      stampsInCycle = 0;
+      stampsInCycle = [];
     }
   }
   // El ciclo actual, en progreso (todavía sin cerrar).
   cycles.push({
     cycleNumber: cycles.length + 1,
-    stamps: stampsInCycle,
+    stamps: stampsInCycle.length,
     stampsRequired: required,
     completed: false,
     completedAt: null,
@@ -112,6 +120,7 @@ export async function computeCardStatus(
     birthdayDiscountLabel: settings.birthdayDiscountLabel,
     rewardDiscountLabel: settings.rewardDiscountLabel,
     cycles,
+    currentCycleStamps: stampsInCycle,
   };
 }
 

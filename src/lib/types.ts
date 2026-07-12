@@ -20,6 +20,10 @@ export interface LoyaltyCycle {
   completedAt: string | null;
 }
 
+export interface CycleStamp {
+  isFiadoUnpaid: boolean;
+}
+
 export interface CardStatus {
   cutsRequiredForReward: number;
   stampsSinceReward: number;
@@ -32,6 +36,7 @@ export interface CardStatus {
   isBirthdayToday: boolean;
   birthdayDiscountLabel: string;
   rewardDiscountLabel: string;
+  currentCycleStamps: CycleStamp[];
   cycles: LoyaltyCycle[];
 }
 

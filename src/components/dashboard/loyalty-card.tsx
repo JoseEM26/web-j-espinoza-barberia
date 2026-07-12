@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Check, Gift, PartyPopper, Scissors, Trophy } from "lucide-react";
+import { Check, Gift, PartyPopper, Scissors, Trophy, Wallet } from "lucide-react";
 import type { CardStatus } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -26,20 +26,37 @@ export function LoyaltyCard({ card }: { card: CardStatus }) {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          {stamps.map((filled, i) => (
-            <div
-              key={i}
-              className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors",
-                filled
-                  ? "border-gold-400 bg-gradient-to-b from-gold-300 to-gold-500 text-[#1a1206]"
-                  : "border-dashed border-surface-border text-foreground/20",
-              )}
-            >
-              {filled ? <Check className="h-5 w-5" /> : <span className="text-xs">{i + 1}</span>}
-            </div>
-          ))}
+          {stamps.map((filled, i) => {
+            const isFiadoUnpaid = filled && card.currentCycleStamps[i]?.isFiadoUnpaid;
+            return (
+              <div
+                key={i}
+                title={isFiadoUnpaid ? "Corte fiado sin pagar" : undefined}
+                className={cn(
+                  "flex h-10 w-10 items-center justify-center rounded-full border-2 transition-colors",
+                  isFiadoUnpaid
+                    ? "border-amber-400 bg-gradient-to-b from-amber-400/80 to-amber-600/80 text-[#241703]"
+                    : filled
+                      ? "border-gold-400 bg-gradient-to-b from-gold-300 to-gold-500 text-[#1a1206]"
+                      : "border-dashed border-surface-border text-foreground/20",
+                )}
+              >
+                {isFiadoUnpaid ? (
+                  <Wallet className="h-4 w-4" />
+                ) : filled ? (
+                  <Check className="h-5 w-5" />
+                ) : (
+                  <span className="text-xs">{i + 1}</span>
+                )}
+              </div>
+            );
+          })}
         </div>
+        {card.currentCycleStamps.some((s) => s.isFiadoUnpaid) && (
+          <p className="-mt-3 flex items-center gap-1.5 text-xs text-amber-300/70">
+            <Wallet className="h-3.5 w-3.5" /> Los sellos ámbar son cortes fiado que aún no se pagan.
+          </p>
+        )}
 
         {card.rewardReady ? (
           <div className="flex items-center gap-2 rounded-md border border-gold-500/40 bg-gold-500/10 px-4 py-3 text-sm text-gold-100">
