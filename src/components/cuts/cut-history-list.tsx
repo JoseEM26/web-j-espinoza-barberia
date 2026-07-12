@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Loader2, Scissors, Trash2, Wallet } from "lucide-react";
+import { Loader2, Pencil, Scissors, Trash2, Wallet } from "lucide-react";
 import type { CutRecord } from "@/lib/types";
 import { CUT_TYPE_BADGE_VARIANT, CUT_TYPE_LABELS } from "@/lib/cut-labels";
 import { useCutPrice } from "@/lib/use-cut-price";
@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PaymentAmountPicker } from "@/components/admin/payment-amount-picker";
+import { EditCutDialog } from "@/components/admin/edit-cut-dialog";
 import {
   Dialog,
   DialogContent,
@@ -49,6 +50,7 @@ export function CutHistoryList({
   onChanged?: () => void;
 }) {
   const [paymentCut, setPaymentCut] = useState<CutRecord | null>(null);
+  const [editingCut, setEditingCut] = useState<CutRecord | null>(null);
   const cutPrice = useCutPrice();
 
   if (cuts.length === 0) {
@@ -120,6 +122,19 @@ export function CutHistoryList({
                 </Button>
               )}
 
+              {canEditPayment && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 text-foreground/30 hover:text-gold-300"
+                  onClick={() => setEditingCut(cut)}
+                  title="Editar corte"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+
               {onDelete && (
                 <Button
                   type="button"
@@ -143,6 +158,15 @@ export function CutHistoryList({
         onClose={() => setPaymentCut(null)}
         onSaved={() => {
           setPaymentCut(null);
+          onChanged?.();
+        }}
+      />
+
+      <EditCutDialog
+        cut={editingCut}
+        onClose={() => setEditingCut(null)}
+        onSaved={() => {
+          setEditingCut(null);
           onChanged?.();
         }}
       />

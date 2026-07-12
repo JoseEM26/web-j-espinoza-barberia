@@ -15,3 +15,12 @@ export type CreateCutInput = z.infer<typeof createCutSchema>;
 export const updateCutPaymentSchema = z.object({
   amountPaid: z.number().min(0).max(100000),
 });
+
+/** Edición completa de un corte ya registrado: tipo, nota y (si aplica) pago. */
+export const updateCutSchema = z.object({
+  type: cutTypeSchema.optional(),
+  note: z.string().trim().max(300).optional(),
+  amountPaid: z.number().min(0).max(100000).optional(),
+});
+
+export type UpdateCutInput = z.infer<typeof updateCutSchema>;
