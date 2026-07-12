@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
   SelectContent,
@@ -105,6 +105,7 @@ export default function AdminUsersPage() {
                 <Card className="transition-colors hover:border-gold-500/40">
                   <CardContent className="flex items-center gap-4 p-4">
                     <Avatar className="size-10 shrink-0">
+                      <AvatarImage src={u.avatarBase64 ?? undefined} alt={u.fullName} />
                       <AvatarFallback>{u.fullName.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">

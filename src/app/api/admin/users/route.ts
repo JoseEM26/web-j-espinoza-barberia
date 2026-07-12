@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
           username: true,
           fullName: true,
           birthDate: true,
+          avatarBase64: true,
           role: true,
           isActive: true,
           blockedReason: true,

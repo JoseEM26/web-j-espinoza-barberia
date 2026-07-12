@@ -6,7 +6,6 @@ export interface AuthUser {
   username: string;
   fullName: string;
   birthDate: string;
-  /** Ausente en listados paginados (para no inflar el payload); presente en vistas de un solo usuario. */
   avatarBase64?: string | null;
   role: Role;
   isActive: boolean;
