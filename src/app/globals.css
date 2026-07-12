@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050403;
+  --foreground: #f5f1e6;
+
+  --surface: #0e0c09;
+  --surface-2: #171310;
+  --surface-border: #2a231a;
+
+  --gold-50: #fbf4e2;
+  --gold-100: #f4e4b8;
+  --gold-200: #ecd28d;
+  --gold-300: #e2bd66;
+  --gold-400: #d3a53f;
+  --gold-500: #c1902e;
+  --gold-600: #9c7322;
+  --gold-700: #7a591b;
+  --gold-800: #5c4315;
+  --gold-900: #3d2d0e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-border: var(--surface-border);
+
+  --color-gold-50: var(--gold-50);
+  --color-gold-100: var(--gold-100);
+  --color-gold-200: var(--gold-200);
+  --color-gold-300: var(--gold-300);
+  --color-gold-400: var(--gold-400);
+  --color-gold-500: var(--gold-500);
+  --color-gold-600: var(--gold-600);
+  --color-gold-700: var(--gold-700);
+  --color-gold-800: var(--gold-800);
+  --color-gold-900: var(--gold-900);
+
+  --font-display: var(--font-playfair);
+  --font-elegant: var(--font-cormorant);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+::selection {
+  background: var(--gold-600);
+  color: #0a0806;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-800) var(--surface);
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--gold-800);
+  border-radius: 999px;
+}
+
+.bg-vignette {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(211, 165, 63, 0.09), transparent 60%),
+    var(--background);
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, var(--gold-200), var(--gold-500) 60%, var(--gold-300));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

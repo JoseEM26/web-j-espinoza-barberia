@@ -1,0 +1,92 @@
+// Prisma schema — JEspinoza Barbería
+// docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+enum CutType {
+  NORMAL
+  REWARD_FREE
+  BIRTHDAY_FREE
+  FIADO
+}
+
+model User {
+  id            String    @id @default(cuid())
+  username      String    @unique
+  passwordHash  String
+  fullName      String
+  birthDate     DateTime  @db.Date
+  avatarBase64  String?
+  role          Role      @default(CLIENT)
+
+  isActive      Boolean   @default(true)
+  blockedReason String?
+  blockedAt     DateTime?
+  blockedById   String?
+  blockedBy     User?     @relation("BlockedByAdmin", fields: [blockedById], references: [id], onDelete: SetNull)
+  blockedUsers  User[]    @relation("BlockedByAdmin")
+
+  cuts          Cut[]     @relation("ClientCuts")
+  cutsGiven     Cut[]     @relation("AdminGivenCuts")
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([username])
+}
+
+model Cut {
+  id          String   @id @default(cuid())
+
+  clientId    String
+  client      User     @relation("ClientCuts", fields: [clientId], references: [id], onDelete: Cascade)
+
+  adminId     String
+  admin       User     @relation("AdminGivenCuts", fields: [adminId], references: [id])
+
+  type        CutType  @default(NORMAL)
+  note        String?
+
+  // Solo aplica a cortes tipo FIADO: cuánto pagó el cliente (0 = fiado
+  // completo, parcial, o igual al precio del corte = ya saldado).
+  amountPaid  Float?
+  isPaid      Boolean  @default(false)
+
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([clientId, date])
+}
+
+// Singleton (id fijo = 1) con la configuración editable del negocio.
+model Settings {
+  id                    Int      @id @default(1)
+  businessName          String   @default("JEspinoza")
+  cutsRequiredForReward Int      @default(5)
+  birthdayDiscountLabel String   @default("¡Feliz cumpleaños! Hoy tu corte va con descuento 🎉")
+  rewardDiscountLabel   String   @default("¡Corte gratis por lealtad!")
+
+  // Precio de referencia de un corte (en soles); tope para cuánto se puede
+  // registrar como pagado en un corte fiado.
+  cutPrice              Float    @default(15)
+
+  // Redes sociales del negocio, editables por el admin. whatsappNumber se
+  // guarda solo con dígitos + código de país (sin "+" ni espacios) para
+  // poder construir el link https://wa.me/<numero> directamente.
+  instagramUrl          String?  @default("https://www.instagram.com/joseem2611/")
+  whatsappNumber        String?  @default("51975026835")
+
+  updatedAt             DateTime @updatedAt
+}
