@@ -14,6 +14,7 @@ export async function GET() {
         cutsRequiredForReward: settings.cutsRequiredForReward,
         birthdayDiscountLabel: settings.birthdayDiscountLabel,
         rewardDiscountLabel: settings.rewardDiscountLabel,
+        cutPrice: settings.cutPrice,
         instagramUrl: settings.instagramUrl,
         whatsappNumber: settings.whatsappNumber,
       },

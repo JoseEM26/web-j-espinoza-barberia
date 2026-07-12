@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth/session";
 import { handleApiError } from "@/lib/api-error";
 
-// Historial propio de cortes (incluye fotos guardadas, si las hay).
+// Historial propio de cortes.
 export async function GET(request: NextRequest) {
   try {
     const user = await requireUser(request);
@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
         id: true,
         type: true,
         note: true,
-        photoBase64: true,
+        amountPaid: true,
+        isPaid: true,
         date: true,
         admin: { select: { username: true, fullName: true } },
       },

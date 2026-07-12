@@ -152,7 +152,12 @@ export default function AdminUserDetailPage() {
             </div>
 
             {cuts ? (
-              <CutHistoryList cuts={cuts} onDelete={handleDeleteCut} />
+              <CutHistoryList
+                cuts={cuts}
+                onDelete={handleDeleteCut}
+                canEditPayment
+                onChanged={load}
+              />
             ) : (
               <Skeleton className="h-24 w-full" />
             )}

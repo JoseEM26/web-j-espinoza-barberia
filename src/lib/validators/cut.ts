@@ -1,14 +1,17 @@
 import { z } from "zod";
-import { imageBase64Schema } from "./image";
-
-export const photoBase64Schema = imageBase64Schema;
 
 export const cutTypeSchema = z.enum(["NORMAL", "REWARD_FREE", "BIRTHDAY_FREE", "FIADO"]);
 
 export const createCutSchema = z.object({
-  photoBase64: photoBase64Schema,
   note: z.string().trim().max(300).optional(),
   type: cutTypeSchema.optional(),
+  // Solo tiene sentido cuando type === "FIADO"; el tope contra el precio
+  // configurado del corte se valida en el endpoint (necesita leer Settings).
+  amountPaid: z.number().min(0).max(100000).optional(),
 });
 
 export type CreateCutInput = z.infer<typeof createCutSchema>;
+
+export const updateCutPaymentSchema = z.object({
+  amountPaid: z.number().min(0).max(100000),
+});

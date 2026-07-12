@@ -21,6 +21,7 @@ export interface CardStatus {
   totalCuts: number;
   totalRewardCutsGiven: number;
   totalBirthdayCutsGiven: number;
+  totalFiadoCutsGiven: number;
   isBirthdayToday: boolean;
   birthdayDiscountLabel: string;
   rewardDiscountLabel: string;
@@ -36,7 +37,9 @@ export interface CutRecord {
   id: string;
   type: CutType;
   note: string | null;
-  photoBase64: string | null;
+  /** Solo relevante para type === "FIADO". */
+  amountPaid: number | null;
+  isPaid: boolean;
   date: string;
   admin?: CutPersonRef;
   client?: CutPersonRef;
@@ -48,7 +51,7 @@ export interface BusinessSettings {
   cutsRequiredForReward: number;
   birthdayDiscountLabel: string;
   rewardDiscountLabel: string;
-  maxStoredPhotos?: number;
+  cutPrice: number;
   instagramUrl?: string | null;
   whatsappNumber?: string | null;
   updatedAt?: string;

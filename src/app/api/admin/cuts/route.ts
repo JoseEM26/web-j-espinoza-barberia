@@ -8,20 +8,20 @@ const querySchema = z.object({
   page: z.coerce.number().int().min(1).optional().default(1),
   pageSize: z.coerce.number().int().min(1).max(100).optional().default(30),
   clientId: z.string().optional(),
-  onlyWithPhoto: z.coerce.boolean().optional().default(false),
+  onlyUnpaid: z.coerce.boolean().optional().default(false),
 });
 
 // Vista global de todos los cortes registrados (historial completo de la barbería).
 export async function GET(request: NextRequest) {
   try {
     await requireAdmin(request);
-    const { page, pageSize, clientId, onlyWithPhoto } = querySchema.parse(
+    const { page, pageSize, clientId, onlyUnpaid } = querySchema.parse(
       Object.fromEntries(request.nextUrl.searchParams),
     );
 
     const where = {
       ...(clientId ? { clientId } : {}),
-      ...(onlyWithPhoto ? { photoBase64: { not: null } } : {}),
+      ...(onlyUnpaid ? { type: "FIADO" as const, isPaid: false } : {}),
     };
 
     const [cuts, total] = await Promise.all([

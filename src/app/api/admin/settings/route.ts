@@ -6,7 +6,6 @@ import {
   normalizeWhatsappNumber,
   updateSettingsSchema,
 } from "@/lib/validators/settings";
-import { enforcePhotoRetentionLimit } from "@/lib/loyalty";
 import { handleApiError } from "@/lib/api-error";
 
 export async function GET(request: NextRequest) {
@@ -19,8 +18,8 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// El admin configura cada cuántos cortes se regala uno, los textos editables
-// del negocio y cuántas fotos como máximo se conservan en la base de datos.
+// El admin configura cada cuántos cortes se regala uno, el precio del corte
+// y los textos editables del negocio.
 export async function PATCH(request: NextRequest) {
   try {
     await requireAdmin(request);
@@ -32,10 +31,6 @@ export async function PATCH(request: NextRequest) {
       instagramUrl: normalizeInstagramUrl(data.instagramUrl),
       whatsappNumber: normalizeWhatsappNumber(data.whatsappNumber),
     });
-
-    if (data.maxStoredPhotos !== undefined) {
-      await enforcePhotoRetentionLimit();
-    }
 
     return NextResponse.json({ settings });
   } catch (error) {

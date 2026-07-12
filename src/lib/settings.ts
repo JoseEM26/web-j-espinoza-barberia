@@ -16,7 +16,7 @@ export async function updateSettings(data: {
   cutsRequiredForReward?: number;
   birthdayDiscountLabel?: string;
   rewardDiscountLabel?: string;
-  maxStoredPhotos?: number;
+  cutPrice?: number;
   instagramUrl?: string | null;
   whatsappNumber?: string | null;
 }) {

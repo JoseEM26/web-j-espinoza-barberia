@@ -1,28 +1,55 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { ImageOff, Scissors, Trash2 } from "lucide-react";
+import { Loader2, Scissors, Trash2, Wallet } from "lucide-react";
 import type { CutRecord } from "@/lib/types";
 import { CUT_TYPE_BADGE_VARIANT, CUT_TYPE_LABELS } from "@/lib/cut-labels";
+import { useCutPrice } from "@/lib/use-cut-price";
+import { api, ApiClientError } from "@/lib/api-client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { PaymentAmountPicker } from "@/components/admin/payment-amount-picker";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+function paymentSummary(cut: CutRecord, cutPrice: number | null) {
+  const paid = cut.amountPaid ?? 0;
+  if (cut.isPaid) return `Pagado (S/ ${paid.toFixed(2)})`;
+  if (cutPrice != null) {
+    const owed = Math.max(cutPrice - paid, 0);
+    return paid > 0
+      ? `Pagó S/ ${paid.toFixed(2)} de S/ ${cutPrice.toFixed(2)} · debe S/ ${owed.toFixed(2)}`
+      : `Debe S/ ${cutPrice.toFixed(2)} (fiado completo)`;
+  }
+  return `Pagó S/ ${paid.toFixed(2)}`;
+}
 
 export function CutHistoryList({
   cuts,
   showClient = false,
   emptyMessage = "Todavía no hay cortes registrados.",
   onDelete,
+  canEditPayment = false,
+  onChanged,
 }: {
   cuts: CutRecord[];
   showClient?: boolean;
   emptyMessage?: string;
   onDelete?: (id: string) => void;
+  canEditPayment?: boolean;
+  onChanged?: () => void;
 }) {
-  const [previewPhoto, setPreviewPhoto] = useState<string | null>(null);
+  const [paymentCut, setPaymentCut] = useState<CutRecord | null>(null);
+  const cutPrice = useCutPrice();
 
   if (cuts.length === 0) {
     return (
@@ -41,27 +68,13 @@ export function CutHistoryList({
         {cuts.map((cut) => (
           <Card key={cut.id}>
             <CardContent className="flex items-center gap-4 p-4">
-              <button
-                type="button"
-                onClick={() => cut.photoBase64 && setPreviewPhoto(cut.photoBase64)}
-                disabled={!cut.photoBase64}
-                className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border border-surface-border bg-surface-2 disabled:cursor-default"
-              >
-                {cut.photoBase64 ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={cut.photoBase64}
-                    alt="Foto del corte"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <ImageOff className="h-5 w-5 text-foreground/20" />
-                )}
-              </button>
-
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant={CUT_TYPE_BADGE_VARIANT[cut.type]}>
+                  <Badge
+                    variant={
+                      cut.type === "FIADO" && cut.isPaid ? "success" : CUT_TYPE_BADGE_VARIANT[cut.type]
+                    }
+                  >
                     {CUT_TYPE_LABELS[cut.type]}
                   </Badge>
                   <span className="text-xs text-foreground/40">
@@ -74,6 +87,17 @@ export function CutHistoryList({
                     <span className="text-foreground/40">@{cut.client.username}</span>
                   </p>
                 )}
+                {cut.type === "FIADO" && (
+                  <p
+                    className={
+                      cut.isPaid
+                        ? "mt-1 text-sm text-emerald-300/80"
+                        : "mt-1 text-sm text-amber-300/80"
+                    }
+                  >
+                    {paymentSummary(cut, cutPrice)}
+                  </p>
+                )}
                 {cut.note && (
                   <p className="mt-1 truncate text-sm text-foreground/60">{cut.note}</p>
                 )}
@@ -83,6 +107,18 @@ export function CutHistoryList({
                   </p>
                 )}
               </div>
+
+              {canEditPayment && cut.type === "FIADO" && !cut.isPaid && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="shrink-0"
+                  onClick={() => setPaymentCut(cut)}
+                >
+                  <Wallet /> Registrar pago
+                </Button>
+              )}
 
               {onDelete && (
                 <Button
@@ -101,15 +137,71 @@ export function CutHistoryList({
         ))}
       </div>
 
-      <Dialog open={!!previewPhoto} onOpenChange={(open) => !open && setPreviewPhoto(null)}>
-        <DialogContent className="max-w-2xl">
-          <DialogTitle>Foto del corte</DialogTitle>
-          {previewPhoto && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={previewPhoto} alt="Foto del corte" className="w-full rounded-md" />
-          )}
-        </DialogContent>
-      </Dialog>
+      <UpdatePaymentDialog
+        cut={paymentCut}
+        cutPrice={cutPrice}
+        onClose={() => setPaymentCut(null)}
+        onSaved={() => {
+          setPaymentCut(null);
+          onChanged?.();
+        }}
+      />
     </>
+  );
+}
+
+function UpdatePaymentDialog({
+  cut,
+  cutPrice,
+  onClose,
+  onSaved,
+}: {
+  cut: CutRecord | null;
+  cutPrice: number | null;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [amount, setAmount] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Reinicia el monto cada vez que se abre para un corte distinto.
+  const [openForId, setOpenForId] = useState<string | null>(null);
+  if (cut && cut.id !== openForId) {
+    setOpenForId(cut.id);
+    setAmount(cut.amountPaid ?? 0);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!cut) return;
+    setSubmitting(true);
+    try {
+      await api.patch(`/admin/cuts/${cut.id}/payment`, { amountPaid: amount });
+      toast.success("Pago registrado.");
+      onSaved();
+    } catch (error) {
+      toast.error(error instanceof ApiClientError ? error.message : "No se pudo registrar el pago.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <Dialog open={!!cut} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Registrar pago{cut?.client ? ` de ${cut.client.fullName}` : ""}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <PaymentAmountPicker amount={amount} onChange={setAmount} cutPrice={cutPrice} />
+          <DialogFooter>
+            <Button type="submit" disabled={submitting}>
+              {submitting && <Loader2 className="animate-spin" />}
+              Guardar
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

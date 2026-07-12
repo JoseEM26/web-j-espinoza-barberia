@@ -94,26 +94,3 @@ export async function suggestCutType(
   if (status.rewardReady) return "REWARD_FREE";
   return "NORMAL";
 }
-
-/**
- * Mantiene como máximo `maxStoredPhotos` fotos guardadas en la base de datos:
- * al superar el límite, borra (deja en null) la foto más antigua, sin borrar
- * el registro del corte ni su historial.
- */
-export async function enforcePhotoRetentionLimit(): Promise<void> {
-  const settings = await getSettings();
-  const photosWithId = await prisma.cut.findMany({
-    where: { photoBase64: { not: null } },
-    orderBy: { date: "asc" },
-    select: { id: true },
-  });
-
-  const excess = photosWithId.length - settings.maxStoredPhotos;
-  if (excess <= 0) return;
-
-  const idsToClear = photosWithId.slice(0, excess).map((c) => c.id);
-  await prisma.cut.updateMany({
-    where: { id: { in: idsToClear } },
-    data: { photoBase64: null },
-  });
-}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Wallet } from "lucide-react";
 import { useRequireRole } from "@/lib/use-require-role";
 import { api } from "@/lib/api-client";
 import type { CutRecord, Pagination } from "@/lib/types";
@@ -15,9 +15,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function AdminCutsPage() {
   const { user, authorized } = useRequireRole("ADMIN");
   const [page, setPage] = useState(1);
-  const [onlyWithPhoto, setOnlyWithPhoto] = useState(false);
+  const [onlyUnpaid, setOnlyUnpaid] = useState(false);
   const [cuts, setCuts] = useState<CutRecord[] | null>(null);
   const [pagination, setPagination] = useState<Pagination | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!authorized) return;
@@ -26,7 +27,7 @@ export default function AdminCutsPage() {
         const params = new URLSearchParams({
           page: String(page),
           pageSize: "20",
-          onlyWithPhoto: String(onlyWithPhoto),
+          onlyUnpaid: String(onlyUnpaid),
         });
         const data = await api.get<{ cuts: CutRecord[]; pagination: Pagination }>(
           `/admin/cuts?${params.toString()}`,
@@ -37,9 +38,13 @@ export default function AdminCutsPage() {
         toast.error("No se pudo cargar el historial de cortes.");
       }
     })();
-  }, [authorized, page, onlyWithPhoto]);
+  }, [authorized, page, onlyUnpaid, refreshKey]);
 
   if (!authorized || !user) return <SplashScreen />;
+
+  function reload() {
+    setRefreshKey((k) => k + 1);
+  }
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
@@ -54,14 +59,14 @@ export default function AdminCutsPage() {
             </p>
           </div>
           <Button
-            variant={onlyWithPhoto ? "default" : "outline"}
+            variant={onlyUnpaid ? "default" : "outline"}
             size="sm"
             onClick={() => {
               setPage(1);
-              setOnlyWithPhoto((v) => !v);
+              setOnlyUnpaid((v) => !v);
             }}
           >
-            <ImageIcon /> Solo con foto
+            <Wallet /> Solo fiados por pagar
           </Button>
         </div>
 
@@ -73,7 +78,13 @@ export default function AdminCutsPage() {
           </div>
         ) : (
           <>
-            <CutHistoryList cuts={cuts} showClient emptyMessage="No hay cortes registrados todavía." />
+            <CutHistoryList
+              cuts={cuts}
+              showClient
+              emptyMessage="No hay cortes registrados todavía."
+              canEditPayment
+              onChanged={reload}
+            />
             {pagination && pagination.totalPages > 1 && (
               <div className="flex items-center justify-center gap-3">
                 <Button

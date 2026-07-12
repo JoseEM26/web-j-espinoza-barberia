@@ -41,7 +41,7 @@ export default function AdminSettingsPage() {
           cutsRequiredForReward: data.settings.cutsRequiredForReward,
           birthdayDiscountLabel: data.settings.birthdayDiscountLabel,
           rewardDiscountLabel: data.settings.rewardDiscountLabel,
-          maxStoredPhotos: data.settings.maxStoredPhotos,
+          cutPrice: data.settings.cutPrice,
           instagramUrl: data.settings.instagramUrl ?? undefined,
           whatsappNumber: data.settings.whatsappNumber ?? undefined,
         });
@@ -62,7 +62,7 @@ export default function AdminSettingsPage() {
         cutsRequiredForReward: data.settings.cutsRequiredForReward,
         birthdayDiscountLabel: data.settings.birthdayDiscountLabel,
         rewardDiscountLabel: data.settings.rewardDiscountLabel,
-        maxStoredPhotos: data.settings.maxStoredPhotos,
+        cutPrice: data.settings.cutPrice,
         instagramUrl: data.settings.instagramUrl ?? undefined,
         whatsappNumber: data.settings.whatsappNumber ?? undefined,
       });
@@ -128,19 +128,20 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="maxStoredPhotos">Máximo de fotos guardadas</Label>
+                <Label htmlFor="cutPrice">Precio del corte (S/)</Label>
                 <Input
-                  id="maxStoredPhotos"
+                  id="cutPrice"
                   type="number"
                   min={0}
-                  max={1000}
-                  {...register("maxStoredPhotos", { valueAsNumber: true })}
+                  max={10000}
+                  step={0.5}
+                  {...register("cutPrice", { valueAsNumber: true })}
                 />
-                {errors.maxStoredPhotos && (
-                  <p className="text-xs text-red-400">{errors.maxStoredPhotos.message}</p>
+                {errors.cutPrice && (
+                  <p className="text-xs text-red-400">{errors.cutPrice.message}</p>
                 )}
                 <p className="text-xs text-foreground/40">
-                  Al superar el límite se eliminan las fotos más antiguas (se conserva el registro).
+                  Es el tope para cuánto se puede registrar como pagado en un corte fiado.
                 </p>
               </div>
 

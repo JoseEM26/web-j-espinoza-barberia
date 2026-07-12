@@ -38,7 +38,7 @@ export const updateSettingsSchema = z.object({
   cutsRequiredForReward: z.coerce.number().int().min(1).max(100).optional(),
   birthdayDiscountLabel: z.string().trim().min(3).max(150).optional(),
   rewardDiscountLabel: z.string().trim().min(3).max(150).optional(),
-  maxStoredPhotos: z.coerce.number().int().min(0).max(1000).optional(),
+  cutPrice: z.coerce.number().min(0).max(10000).optional(),
   instagramUrl: instagramUrlSchema,
   whatsappNumber: whatsappNumberSchema,
 });
@@ -50,7 +50,7 @@ export const updateSettingsFormSchema = z.object({
   cutsRequiredForReward: z.number().int().min(1).max(100).optional(),
   birthdayDiscountLabel: z.string().trim().min(3).max(150).optional(),
   rewardDiscountLabel: z.string().trim().min(3).max(150).optional(),
-  maxStoredPhotos: z.number().int().min(0).max(1000).optional(),
+  cutPrice: z.number().min(0).max(10000).optional(),
   instagramUrl: instagramUrlSchema,
   whatsappNumber: whatsappNumberSchema,
 });

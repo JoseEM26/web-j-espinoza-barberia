@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "Cut" DROP COLUMN "photoBase64",
+ADD COLUMN     "amountPaid" DOUBLE PRECISION,
+ADD COLUMN     "isPaid" BOOLEAN NOT NULL DEFAULT false;
+
+-- AlterTable
+ALTER TABLE "Settings" DROP COLUMN "maxStoredPhotos",
+ADD COLUMN     "cutPrice" DOUBLE PRECISION NOT NULL DEFAULT 15;
+
