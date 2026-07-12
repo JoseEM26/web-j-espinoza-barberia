@@ -18,6 +18,26 @@ export const passwordSchema = z
   .regex(/[a-zA-Z]/, "La contraseña debe incluir al menos una letra.")
   .regex(/[0-9]/, "La contraseña debe incluir al menos un número.");
 
+// Mismo patrón que con phoneSchema: un input HTML vacío envía "" (no
+// undefined), así que un simple `.optional()` sobre passwordSchema no
+// alcanza — igual corre el min(8)/regex contra "" y bloquea el envío del
+// formulario aunque el usuario no quiera cambiar su contraseña.
+export const optionalNewPasswordSchema = z
+  .string()
+  .optional()
+  .refine((value) => !value || value.length >= 8, {
+    message: "La contraseña debe tener al menos 8 caracteres.",
+  })
+  .refine((value) => !value || value.length <= 72, {
+    message: "La contraseña no puede superar los 72 caracteres.",
+  })
+  .refine((value) => !value || /[a-zA-Z]/.test(value), {
+    message: "La contraseña debe incluir al menos una letra.",
+  })
+  .refine((value) => !value || /[0-9]/.test(value), {
+    message: "La contraseña debe incluir al menos un número.",
+  });
+
 export const birthDateSchema = z
   .string()
   .refine((value) => !Number.isNaN(Date.parse(value)), {

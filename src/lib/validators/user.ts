@@ -3,6 +3,7 @@ import {
   birthDateInputSchema,
   birthDateSchema,
   fullNameSchema,
+  optionalNewPasswordSchema,
   passwordSchema,
   usernameSchema,
 } from "./auth";
@@ -14,7 +15,7 @@ export const updateSelfSchema = z
     fullName: fullNameSchema.optional(),
     avatarBase64: imageBase64Schema,
     currentPassword: z.string().optional(),
-    newPassword: passwordSchema.optional(),
+    newPassword: optionalNewPasswordSchema,
     confirmNewPassword: z.string().optional(),
   })
   .refine((data) => !data.newPassword || !!data.currentPassword, {
