@@ -13,6 +13,14 @@ export interface AuthUser {
   blockedReason: string | null;
 }
 
+export interface LoyaltyCycle {
+  cycleNumber: number;
+  stamps: number;
+  stampsRequired: number;
+  completed: boolean;
+  completedAt: string | null;
+}
+
 export interface CardStatus {
   cutsRequiredForReward: number;
   stampsSinceReward: number;
@@ -25,6 +33,7 @@ export interface CardStatus {
   isBirthdayToday: boolean;
   birthdayDiscountLabel: string;
   rewardDiscountLabel: string;
+  cycles: LoyaltyCycle[];
 }
 
 export interface CutPersonRef {

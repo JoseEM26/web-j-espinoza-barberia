@@ -29,6 +29,14 @@ export function isBirthdayToday(birthDate: Date, now: Date = new Date()): boolea
   );
 }
 
+export interface LoyaltyCycle {
+  cycleNumber: number;
+  stamps: number;
+  stampsRequired: number;
+  completed: boolean;
+  completedAt: string | null;
+}
+
 export interface CardStatus {
   cutsRequiredForReward: number;
   stampsSinceReward: number;
@@ -41,6 +49,9 @@ export interface CardStatus {
   isBirthdayToday: boolean;
   birthdayDiscountLabel: string;
   rewardDiscountLabel: string;
+  /** Historial completo de ciclos (sin límite): cada uno se cierra al entregar
+   * un corte gratis por lealtad y el conteo arranca de cero para el siguiente. */
+  cycles: LoyaltyCycle[];
 }
 
 export async function computeCardStatus(
@@ -54,17 +65,39 @@ export async function computeCardStatus(
     select: { type: true, date: true },
   });
 
-  const lastReward = [...cuts].reverse().find((c) => c.type === "REWARD_FREE");
-  const cutsSinceReward = lastReward
-    ? cuts.filter((c) => c.date > lastReward.date)
-    : cuts;
-
-  // Un corte "fiado" (a crédito) sigue siendo un corte realizado — cuenta
-  // igual que uno normal para el progreso de la tarjeta.
-  const stampsSinceReward = cutsSinceReward.filter(
-    (c) => c.type === "NORMAL" || c.type === "FIADO",
-  ).length;
   const required = settings.cutsRequiredForReward;
+
+  // Agrupa los cortes en ciclos: un corte "normal"/"fiado" suma un sello; un
+  // corte gratis por lealtad cierra el ciclo actual y arranca uno nuevo. Los
+  // cortes de cumpleaños no afectan el conteo (son un beneficio aparte). No
+  // hay límite de cuántos ciclos se acumulen — se derivan de todo el
+  // historial del cliente.
+  const cycles: LoyaltyCycle[] = [];
+  let stampsInCycle = 0;
+  for (const cut of cuts) {
+    if (cut.type === "NORMAL" || cut.type === "FIADO") {
+      stampsInCycle += 1;
+    } else if (cut.type === "REWARD_FREE") {
+      cycles.push({
+        cycleNumber: cycles.length + 1,
+        stamps: stampsInCycle,
+        stampsRequired: required,
+        completed: true,
+        completedAt: cut.date.toISOString(),
+      });
+      stampsInCycle = 0;
+    }
+  }
+  // El ciclo actual, en progreso (todavía sin cerrar).
+  cycles.push({
+    cycleNumber: cycles.length + 1,
+    stamps: stampsInCycle,
+    stampsRequired: required,
+    completed: false,
+    completedAt: null,
+  });
+
+  const stampsSinceReward = cycles[cycles.length - 1].stamps;
 
   return {
     cutsRequiredForReward: required,
@@ -78,6 +111,7 @@ export async function computeCardStatus(
     isBirthdayToday: isBirthdayToday(birthDate),
     birthdayDiscountLabel: settings.birthdayDiscountLabel,
     rewardDiscountLabel: settings.rewardDiscountLabel,
+    cycles,
   };
 }
 
