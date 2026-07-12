@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Search, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRequireRole } from "@/lib/use-require-role";
 import { api } from "@/lib/api-client";
 import type { AdminUserListItem, Pagination } from "@/lib/types";
@@ -11,6 +11,7 @@ import { AppHeader } from "@/components/layout/app-header";
 import { SplashScreen } from "@/components/brand/splash-screen";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,6 +29,7 @@ export default function AdminUsersPage() {
   const { user, authorized } = useRequireRole("ADMIN");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
+  const [page, setPage] = useState(1);
   const [users, setUsers] = useState<AdminUserListItem[] | null>(null);
   const [pagination, setPagination] = useState<Pagination | null>(null);
 
@@ -35,7 +37,7 @@ export default function AdminUsersPage() {
     if (!authorized) return;
     const timeout = setTimeout(async () => {
       try {
-        const params = new URLSearchParams({ status });
+        const params = new URLSearchParams({ status, page: String(page), pageSize: "20" });
         if (search) params.set("search", search);
         const data = await api.get<{ users: AdminUserListItem[]; pagination: Pagination }>(
           `/admin/users?${params.toString()}`,
@@ -47,7 +49,7 @@ export default function AdminUsersPage() {
       }
     }, 250);
     return () => clearTimeout(timeout);
-  }, [authorized, search, status]);
+  }, [authorized, search, status, page]);
 
   if (!authorized || !user) return <SplashScreen />;
 
@@ -70,11 +72,20 @@ export default function AdminUsersPage() {
               placeholder="Buscar por nombre o usuario..."
               maxLength={60}
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setPage(1);
+                setSearch(e.target.value);
+              }}
               className="pl-9"
             />
           </div>
-          <Select value={status} onValueChange={(v) => setStatus(v as StatusFilter)}>
+          <Select
+            value={status}
+            onValueChange={(v) => {
+              setPage(1);
+              setStatus(v as StatusFilter);
+            }}
+          >
             <SelectTrigger className="sm:w-48">
               <SelectValue />
             </SelectTrigger>
@@ -99,37 +110,63 @@ export default function AdminUsersPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="flex flex-col gap-3">
-            {users.map((u) => (
-              <Link key={u.id} href={`/admin/users/${u.id}`}>
-                <Card className="transition-colors hover:border-gold-500/40">
-                  <CardContent className="flex items-center gap-4 p-4">
-                    <Avatar className="size-10 shrink-0">
-                      <AvatarImage src={u.avatarBase64 ?? undefined} alt={u.fullName} />
-                      <AvatarFallback>{u.fullName.charAt(0).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-display text-base text-foreground">{u.fullName}</p>
-                        <Badge variant={u.isActive ? "success" : "destructive"}>
-                          {u.isActive ? "Activo" : "Bloqueado"}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-foreground/40">
-                        @{u.username} · {u._count.cuts} corte{u._count.cuts === 1 ? "" : "s"}
-                      </p>
-                      {!u.isActive && u.blockedReason && (
-                        <p className="mt-1 truncate text-xs text-red-300/80">
-                          Motivo: {u.blockedReason}
+          <>
+            <div className="flex flex-col gap-3">
+              {users.map((u) => (
+                <Link key={u.id} href={`/admin/users/${u.id}`}>
+                  <Card className="transition-colors hover:border-gold-500/40">
+                    <CardContent className="flex items-center gap-4 p-4">
+                      <Avatar className="size-10 shrink-0">
+                        <AvatarImage src={u.avatarBase64 ?? undefined} alt={u.fullName} />
+                        <AvatarFallback>{u.fullName.charAt(0).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-display text-base text-foreground">{u.fullName}</p>
+                          <Badge variant={u.isActive ? "success" : "destructive"}>
+                            {u.isActive ? "Activo" : "Bloqueado"}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-foreground/40">
+                          @{u.username} · {u._count.cuts} corte{u._count.cuts === 1 ? "" : "s"}
                         </p>
-                      )}
-                    </div>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-foreground/20" />
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+                        {!u.isActive && u.blockedReason && (
+                          <p className="mt-1 truncate text-xs text-red-300/80">
+                            Motivo: {u.blockedReason}
+                          </p>
+                        )}
+                      </div>
+                      <ChevronRight className="h-4 w-4 shrink-0 text-foreground/20" />
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+
+            {pagination && pagination.totalPages > 1 && (
+              <div className="flex items-center justify-center gap-3">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  <ChevronLeft />
+                </Button>
+                <span className="text-sm text-foreground/50">
+                  Página {pagination.page} de {pagination.totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  disabled={page >= pagination.totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  <ChevronRight />
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>
