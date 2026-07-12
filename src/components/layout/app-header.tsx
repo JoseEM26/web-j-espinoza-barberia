@@ -13,6 +13,7 @@ const CLIENT_LINKS = [{ href: "/dashboard", label: "Mi tarjeta" }];
 const ADMIN_LINKS = [
   { href: "/admin", label: "Usuarios" },
   { href: "/admin/cuts", label: "Cortes" },
+  { href: "/admin/qr", label: "QR" },
   { href: "/admin/settings", label: "Configuración" },
 ];
 
