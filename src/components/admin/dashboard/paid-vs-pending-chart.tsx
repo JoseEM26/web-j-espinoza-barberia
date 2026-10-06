@@ -31,7 +31,7 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
 const COLORS = [
   "#7A4A2B", // Pagados: Marrón Café primario
   "#B08968", // Pendientes: Secundario café suave
-  "#D9B99B", // Gratis: Arena claro
+  "#D9B99B", // Con descuento: Arena claro
 ];
 
 export function PaidVsPendingChart({ data, loading }: PaidVsPendingChartProps) {
@@ -58,7 +58,7 @@ export function PaidVsPendingChart({ data, loading }: PaidVsPendingChartProps) {
   const chartData = [
     { name: "Pagados", value: data.paid },
     { name: "Pendientes (Fiado)", value: data.pending },
-    { name: "Gratis (Lealtad/Cumple)", value: data.free },
+    { name: "Con descuento (Lealtad/Cumple)", value: data.free },
   ];
 
   return (

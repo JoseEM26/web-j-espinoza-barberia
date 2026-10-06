@@ -78,8 +78,8 @@ export function EditCutDialog({
               <SelectContent>
                 <SelectItem value="NORMAL">Corte normal</SelectItem>
                 <SelectItem value="FIADO">Fiado (a crédito)</SelectItem>
-                <SelectItem value="REWARD_FREE">Gratis · Premio por lealtad</SelectItem>
-                <SelectItem value="BIRTHDAY_FREE">Gratis · Cumpleaños</SelectItem>
+                <SelectItem value="REWARD_FREE">50% dscto. · Lealtad</SelectItem>
+                <SelectItem value="BIRTHDAY_FREE">Descuento · Cumpleaños</SelectItem>
               </SelectContent>
             </Select>
           </div>

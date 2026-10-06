@@ -98,7 +98,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="cutsRequiredForReward">Cortes para ganar uno gratis</Label>
+                <Label htmlFor="cutsRequiredForReward">Cortes para ganar 50% de descuento</Label>
                 <Input
                   id="cutsRequiredForReward"
                   type="number"
@@ -112,7 +112,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="rewardDiscountLabel">Mensaje de corte gratis por lealtad</Label>
+                <Label htmlFor="rewardDiscountLabel">Mensaje de descuento por lealtad (50%)</Label>
                 <Textarea id="rewardDiscountLabel" maxLength={150} {...register("rewardDiscountLabel")} />
                 {errors.rewardDiscountLabel && (
                   <p className="text-xs font-medium text-red-600">{errors.rewardDiscountLabel.message}</p>

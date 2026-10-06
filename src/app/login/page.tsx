@@ -80,7 +80,7 @@ function LoginForm() {
             Bienvenido
           </h1>
           <p className="mt-1 text-xs sm:text-[13px] text-muted font-medium">
-            Acumula sellos, gana cortes gratis
+            Acumula sellos, gana 50% de descuento
           </p>
         </header>
 

@@ -55,7 +55,7 @@ export interface CardStatus {
   birthdayDiscountLabel: string;
   rewardDiscountLabel: string;
   /** Historial completo de ciclos (sin límite): cada uno se cierra al entregar
-   * un corte gratis por lealtad y el conteo arranca de cero para el siguiente. */
+   * el 50% de descuento por lealtad y el conteo arranca de cero para el siguiente. */
   cycles: LoyaltyCycle[];
   /** Los sellos del ciclo actual (en progreso), en orden, para pintar cada
    * círculo según su estado real (normal vs. fiado sin pagar). */
@@ -76,7 +76,7 @@ export async function computeCardStatus(
   const required = settings.cutsRequiredForReward;
 
   // Agrupa los cortes en ciclos: un corte "normal"/"fiado" suma un sello; un
-  // corte gratis por lealtad cierra el ciclo actual y arranca uno nuevo. Los
+  // descuento por lealtad cierra el ciclo actual y arranca uno nuevo. Los
   // cortes de cumpleaños no afectan el conteo (son un beneficio aparte). No
   // hay límite de cuántos ciclos se acumulen — se derivan de todo el
   // historial del cliente.

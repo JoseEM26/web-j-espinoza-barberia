@@ -2,8 +2,8 @@ import type { CutType } from "@/lib/types";
 
 export const CUT_TYPE_LABELS: Record<CutType, string> = {
   NORMAL: "Corte",
-  REWARD_FREE: "Gratis · Lealtad",
-  BIRTHDAY_FREE: "Gratis · Cumpleaños",
+  REWARD_FREE: "50% dscto. · Lealtad",
+  BIRTHDAY_FREE: "Descuento · Cumpleaños",
   FIADO: "Fiado",
 };
 

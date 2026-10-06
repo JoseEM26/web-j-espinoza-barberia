@@ -59,7 +59,7 @@ export function KpiCards({ kpis, loading }: KpiCardsProps) {
       icon: DollarSign,
     },
     {
-      title: "Cortes Gratis Canjeados",
+      title: "Descuentos Canjeados",
       value: kpis.freeCutsRedeemed.value.toLocaleString("es-PE"),
       unit: "beneficios",
       change: kpis.freeCutsRedeemed.changePercentage,

@@ -76,7 +76,7 @@ export function RecentCutsPanel({ cuts, loading }: RecentCutsPanelProps) {
 
             if (cut.estado === "FREE") {
               badgeVariant = "secondary";
-              statusLabel = "Gratis";
+              statusLabel = "Descuento";
             } else if (cut.estado === "PENDING") {
               badgeVariant = "warning";
               statusLabel = "Fiado Pte.";

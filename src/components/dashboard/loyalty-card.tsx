@@ -37,10 +37,10 @@ export function LoyaltyCard({ card }: { card: CardStatus }) {
             </h2>
             <p className="mt-0.5 text-xs text-muted">
               {card.rewardReady
-                ? "¡Tienes un corte gratis listo para canjear!"
+                ? "¡Tienes 50% de descuento listo para canjear!"
                 : `¡Te faltan ${card.remainingForReward} corte${
                     card.remainingForReward === 1 ? "" : "s"
-                  } para tu corte gratis!`}
+                  } para tu 50% de descuento!`}
             </p>
           </div>
 
@@ -115,12 +115,12 @@ export function LoyaltyCard({ card }: { card: CardStatus }) {
               return (
                 <div
                   key={i}
-                  title="¡Corte gratis al completar!"
+                  title="¡50% de descuento al completar!"
                   className="aspect-square rounded-xl bg-gradient-to-br from-surface-2 to-sand-light/60 border-2 border-dashed border-primary text-primary flex flex-col items-center justify-center shadow-2xs"
                 >
                   <Gift className="size-4" />
                   <span className="text-[9px] font-extrabold uppercase tracking-tight mt-0.5">
-                    GRATIS
+                    50% DSCTO
                   </span>
                 </div>
               );
@@ -156,7 +156,7 @@ export function LoyaltyCard({ card }: { card: CardStatus }) {
         ) : (
           <p className="text-xs sm:text-sm text-muted">
             Te faltan <span className="font-semibold text-primary">{card.remainingForReward}</span>{" "}
-            corte{card.remainingForReward === 1 ? "" : "s"} para tu próximo corte gratis.
+            corte{card.remainingForReward === 1 ? "" : "s"} para tu próximo 50% de descuento.
           </p>
         )}
 

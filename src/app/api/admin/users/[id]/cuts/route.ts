@@ -26,8 +26,8 @@ export async function GET(
   }
 }
 
-// El admin registra una "firma"/check por cada corte. El tipo (normal, gratis
-// por cumpleaños, gratis por lealtad o fiado) se sugiere automáticamente
+// El admin registra una "firma"/check por cada corte. El tipo (normal, con descuento
+// por cumpleaños, 50% por lealtad o fiado) se sugiere automáticamente
 // según la tarjeta del cliente, pero el admin puede sobreescribirlo.
 export async function POST(
   request: NextRequest,

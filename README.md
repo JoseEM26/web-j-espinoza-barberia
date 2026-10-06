@@ -2,7 +2,7 @@
 
 Aplicación web para la barbería **JEspinoza**: los clientes se registran y ven el
 estado de su tarjeta de fidelidad (cuántos cortes llevan, cuántos les faltan
-para el corte gratis, su historial); el administrador gestiona clientes,
+para el 50% de descuento, su historial); el administrador gestiona clientes,
 registra cada corte (incluyendo cortes **fiado**/a crédito con seguimiento de
 pago) y configura las reglas del negocio sin tocar código.
 
@@ -32,7 +32,7 @@ hasheadas con **bcrypt**.
   fecha de nacimiento — sin correo electrónico.
 - Login con usuario/contraseña. Si un cliente fue bloqueado, ve el motivo
   exacto al intentar ingresar.
-- Tarjeta de fidelidad visual: progreso hacia el próximo corte gratis.
+- Tarjeta de fidelidad visual: progreso hacia el próximo 50% de descuento.
 - Aviso especial de descuento el día de su cumpleaños.
 - Historial completo de sus cortes, incluyendo el estado de pago de los
   cortes fiado.
@@ -44,7 +44,7 @@ hasheadas con **bcrypt**.
 - Buscar, filtrar y administrar clientes (activar/bloquear con motivo,
   editar datos, restablecer contraseña).
 - Registrar un corte ("firma") por cliente. El tipo se sugiere solo
-  (normal / gratis por cumpleaños / gratis por lealtad) pero se puede
+  (normal / con descuento por cumpleaños / 50% de descuento por lealtad) pero se puede
   forzar, incluyendo **Fiado** (a crédito).
 - En un corte fiado: registrar cuánto pagó el cliente (nada, la mitad, todo,
   o un monto exacto) sin superar el precio configurado del corte, y marcarlo

@@ -76,7 +76,7 @@ model Settings {
   businessName          String   @default("JEspinoza")
   cutsRequiredForReward Int      @default(5)
   birthdayDiscountLabel String   @default("¡Feliz cumpleaños! Hoy tu corte va con descuento 🎉")
-  rewardDiscountLabel   String   @default("¡Corte gratis por lealtad!")
+  rewardDiscountLabel   String   @default("¡50% de descuento por lealtad!")
 
   // Precio de referencia de un corte (en soles); tope para cuánto se puede
   // registrar como pagado en un corte fiado.
