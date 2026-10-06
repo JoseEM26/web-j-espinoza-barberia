@@ -71,17 +71,17 @@ export function EditUserDialog({
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="fullName">Nombre completo</Label>
             <Input id="fullName" maxLength={80} {...register("fullName")} />
-            {errors.fullName && <p className="text-xs text-red-400">{errors.fullName.message}</p>}
+            {errors.fullName && <p className="text-xs font-medium text-red-600">{errors.fullName.message}</p>}
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="username">Usuario</Label>
             <Input id="username" maxLength={20} {...register("username")} />
-            {errors.username && <p className="text-xs text-red-400">{errors.username.message}</p>}
+            {errors.username && <p className="text-xs font-medium text-red-600">{errors.username.message}</p>}
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="birthDate">Fecha de nacimiento</Label>
             <Input id="birthDate" type="date" {...register("birthDate")} />
-            {errors.birthDate && <p className="text-xs text-red-400">{errors.birthDate.message}</p>}
+            {errors.birthDate && <p className="text-xs font-medium text-red-600">{errors.birthDate.message}</p>}
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>

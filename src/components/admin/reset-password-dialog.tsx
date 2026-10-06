@@ -92,7 +92,7 @@ export function ResetPasswordDialog({
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
             />
-            {error && <p className="text-xs text-red-400">{error}</p>}
+            {error && <p className="text-xs font-medium text-red-600">{error}</p>}
           </div>
           <DialogFooter>
             <Button type="submit" disabled={submitting}>

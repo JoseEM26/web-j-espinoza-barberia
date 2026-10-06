@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { loginSchema, type LoginInput } from "@/lib/validators/auth";
 import { api, ApiClientError } from "@/lib/api-client";
 import { useAuth } from "@/contexts/auth-context";
@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/auth/password-input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { SocialFooter } from "@/components/layout/social-footer";
 
 interface LoginResponse {
@@ -66,71 +66,105 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center px-4 py-10">
-      <div className="w-full max-w-sm">
-        <div className="mx-auto mb-6 w-48 sm:w-56">
-          <Logo priority />
-        </div>
+    <div className="relative flex flex-1 items-center justify-center px-4 py-8 sm:py-12">
+      {/* Glow decorativo sutil en la parte superior */}
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-64 h-36 bg-gradient-to-b from-sand/25 to-transparent rounded-full blur-3xl -z-10" />
 
-        <Card>
-          <CardHeader className="text-center">
-            <p className="font-elegant text-2xl italic text-gold-200">Bienvenido de nuevo</p>
-            <p className="text-sm text-foreground/50">
-              Ingresa a tu cuenta para ver tu tarjeta de fidelidad
-            </p>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="username">Usuario</Label>
-                <Input
-                  id="username"
-                  autoComplete="username"
-                  placeholder="tu_usuario"
-                  maxLength={100}
-                  {...register("username")}
-                />
-                {errors.username && (
-                  <p className="text-xs text-red-400">{errors.username.message}</p>
-                )}
-              </div>
+      <div className="w-full max-w-[390px]">
+        {/* Cabecera con Logo y bienvenida */}
+        <header className="mb-6 text-center">
+          <div className="flex justify-center mb-4">
+            <Logo priority />
+          </div>
+          <h1 className="font-display font-semibold text-2xl sm:text-3xl text-dark tracking-tight">
+            Bienvenido
+          </h1>
+          <p className="mt-1 text-xs sm:text-[13px] text-muted font-medium">
+            Acumula sellos, gana cortes gratis
+          </p>
+        </header>
 
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="password">Contraseña</Label>
-                <PasswordInput
-                  id="password"
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  maxLength={100}
-                  {...register("password")}
-                />
-                {errors.password && (
-                  <p className="text-xs text-red-400">{errors.password.message}</p>
-                )}
-              </div>
-
-              {serverError && (
-                <p className="rounded-md border border-red-900/50 bg-red-950/30 px-3 py-2 text-sm text-red-300">
-                  {serverError}
-                </p>
+        {/* Tarjeta blanca con borde arena */}
+        <Card className="p-6 sm:p-7 shadow-xs shadow-primary/5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="username" className="text-xs font-semibold text-dark tracking-wide">
+                Usuario
+              </Label>
+              <Input
+                id="username"
+                autoComplete="username"
+                placeholder="tu_usuario"
+                maxLength={100}
+                {...register("username")}
+              />
+              {errors.username && (
+                <p className="text-xs text-red-600 font-medium">{errors.username.message}</p>
               )}
+            </div>
 
-              <Button type="submit" size="lg" disabled={isSubmitting} className="mt-2">
-                {isSubmitting && <Loader2 className="animate-spin" />}
-                Ingresar
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-xs font-semibold text-dark tracking-wide">
+                Contraseña
+              </Label>
+              <PasswordInput
+                id="password"
+                autoComplete="current-password"
+                placeholder="••••••••••••"
+                maxLength={100}
+                {...register("password")}
+              />
+              {errors.password && (
+                <p className="text-xs text-red-600 font-medium">{errors.password.message}</p>
+              )}
+            </div>
+
+            {serverError && (
+              <p className="rounded-xl border border-red-200 bg-red-50/90 px-3.5 py-2.5 text-xs sm:text-sm text-red-700 font-medium">
+                {serverError}
+              </p>
+            )}
+
+            <div className="pt-1">
+              <Button
+                type="submit"
+                size="lg"
+                disabled={isSubmitting}
+                className="w-full shadow-xs shadow-primary/15"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    <span>Ingresando...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Ingresar</span>
+                    <ArrowRight className="size-4" />
+                  </>
+                )}
               </Button>
-            </form>
-          </CardContent>
+            </div>
+          </form>
         </Card>
 
-        <p className="mt-6 text-center text-sm text-foreground/50">
-          ¿No tienes cuenta?{" "}
-          <Link href="/register" className="text-gold-300 hover:underline">
-            Crea una aquí
+        {/* Enlace cruzado a registro */}
+        <p className="mt-6 text-center text-xs sm:text-sm text-muted">
+          ¿Aún no eres miembro?{" "}
+          <Link
+            href="/register"
+            className="font-bold text-primary hover:text-primary-hover hover:underline transition-colors ml-0.5"
+          >
+            Regístrate
           </Link>
         </p>
 
+        {/* Footer de redes sociales */}
         <SocialFooter />
+
+        <p className="mt-4 text-center text-[10px] text-muted/70 uppercase tracking-wider font-semibold">
+          SINCE 2018 • La excelencia del corte clásico
+        </p>
       </div>
     </div>
   );

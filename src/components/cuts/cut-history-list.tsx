@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 function paymentSummary(cut: CutRecord, cutPrice: number | null) {
   const paid = cut.amountPaid ?? 0;
@@ -55,10 +56,10 @@ export function CutHistoryList({
 
   if (cuts.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center gap-2 py-10 text-center text-foreground/40">
-          <Scissors className="h-8 w-8" />
-          <p className="text-sm">{emptyMessage}</p>
+      <Card className="rounded-2xl border border-border bg-white shadow-2xs">
+        <CardContent className="flex flex-col items-center justify-center gap-2 py-10 text-center text-muted">
+          <Scissors className="size-8 text-sand" />
+          <p className="text-xs sm:text-sm font-medium">{emptyMessage}</p>
         </CardContent>
       </Card>
     );
@@ -66,45 +67,64 @@ export function CutHistoryList({
 
   return (
     <>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2.5">
         {cuts.map((cut) => (
-          <Card key={cut.id}>
-            <CardContent className="flex items-center gap-4 p-4">
+          <Card
+            key={cut.id}
+            className="rounded-2xl border border-border bg-white shadow-2xs transition-shadow hover:shadow-xs"
+          >
+            <CardContent className="flex items-center gap-3.5 p-3.5 sm:p-4">
+              <div className="size-10 rounded-xl bg-surface-2 border border-border flex items-center justify-center text-primary shrink-0">
+                <Scissors className="size-4" />
+              </div>
+
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge
                     variant={
-                      cut.type === "FIADO" && cut.isPaid ? "success" : CUT_TYPE_BADGE_VARIANT[cut.type]
+                      cut.type === "FIADO" && cut.isPaid
+                        ? "success"
+                        : CUT_TYPE_BADGE_VARIANT[cut.type]
                     }
                   >
                     {CUT_TYPE_LABELS[cut.type]}
                   </Badge>
-                  <span className="text-xs text-foreground/40">
-                    {format(new Date(cut.date), "d 'de' MMMM yyyy, HH:mm", { locale: es })}
+                  <span className="text-xs text-muted">
+                    {format(new Date(cut.date), "d 'de' MMMM yyyy, HH:mm", {
+                      locale: es,
+                    })}
                   </span>
                 </div>
+
                 {showClient && cut.client && (
-                  <p className="mt-1 truncate text-sm font-medium text-gold-100">
+                  <p className="mt-1 truncate text-sm font-semibold text-foreground">
                     {cut.client.fullName}{" "}
-                    <span className="text-foreground/40">@{cut.client.username}</span>
+                    <span className="font-normal text-muted">@{cut.client.username}</span>
                   </p>
                 )}
+
                 {cut.type === "FIADO" && (
-                  <p
-                    className={
-                      cut.isPaid
-                        ? "mt-1 text-sm text-emerald-300/80"
-                        : "mt-1 text-sm text-amber-300/80"
-                    }
-                  >
-                    {paymentSummary(cut, cutPrice)}
-                  </p>
+                  <div className="mt-1">
+                    <span
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-medium border",
+                        cut.isPaid
+                          ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                          : "border-amber-200 bg-amber-50 text-amber-800",
+                      )}
+                    >
+                      <Wallet className="size-3" />
+                      {paymentSummary(cut, cutPrice)}
+                    </span>
+                  </div>
                 )}
+
                 {cut.note && (
-                  <p className="mt-1 truncate text-sm text-foreground/60">{cut.note}</p>
+                  <p className="mt-1 truncate text-xs text-foreground/80">{cut.note}</p>
                 )}
+
                 {cut.admin && (
-                  <p className="mt-1 text-xs text-foreground/30">
+                  <p className="mt-0.5 text-[11px] text-muted">
                     Registrado por {cut.admin.fullName}
                   </p>
                 )}
@@ -115,10 +135,11 @@ export function CutHistoryList({
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="shrink-0"
+                  className="shrink-0 gap-1.5"
                   onClick={() => setPaymentCut(cut)}
                 >
-                  <Wallet /> Registrar pago
+                  <Wallet className="size-3.5" />
+                  <span className="hidden sm:inline">Registrar pago</span>
                 </Button>
               )}
 
@@ -127,11 +148,11 @@ export function CutHistoryList({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="shrink-0 text-foreground/30 hover:text-gold-300"
+                  className="shrink-0 text-muted hover:text-primary"
                   onClick={() => setEditingCut(cut)}
                   title="Editar corte"
                 >
-                  <Pencil className="h-4 w-4" />
+                  <Pencil className="size-4" />
                 </Button>
               )}
 
@@ -140,11 +161,11 @@ export function CutHistoryList({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="shrink-0 text-foreground/30 hover:text-red-400"
+                  className="shrink-0 text-muted hover:text-red-600"
                   onClick={() => onDelete(cut.id)}
                   title="Eliminar corte"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="size-4" />
                 </Button>
               )}
             </CardContent>
@@ -188,7 +209,6 @@ function UpdatePaymentDialog({
   const [amount, setAmount] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
-  // Reinicia el monto cada vez que se abre para un corte distinto.
   const [openForId, setOpenForId] = useState<string | null>(null);
   if (cut && cut.id !== openForId) {
     setOpenForId(cut.id);
@@ -204,7 +224,11 @@ function UpdatePaymentDialog({
       toast.success("Pago registrado.");
       onSaved();
     } catch (error) {
-      toast.error(error instanceof ApiClientError ? error.message : "No se pudo registrar el pago.");
+      toast.error(
+        error instanceof ApiClientError
+          ? error.message
+          : "No se pudo registrar el pago.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -214,10 +238,16 @@ function UpdatePaymentDialog({
     <Dialog open={!!cut} onOpenChange={(open) => !open && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Registrar pago{cut?.client ? ` de ${cut.client.fullName}` : ""}</DialogTitle>
+          <DialogTitle>
+            Registrar pago{cut?.client ? ` de ${cut.client.fullName}` : ""}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <PaymentAmountPicker amount={amount} onChange={setAmount} cutPrice={cutPrice} />
+          <PaymentAmountPicker
+            amount={amount}
+            onChange={setAmount}
+            cutPrice={cutPrice}
+          />
           <DialogFooter>
             <Button type="submit" disabled={submitting}>
               {submitting && <Loader2 className="animate-spin" />}

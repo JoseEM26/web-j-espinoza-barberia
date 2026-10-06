@@ -30,16 +30,16 @@ export function SocialFooter() {
   if (!instagramUrl && !whatsappUrl) return null;
 
   return (
-    <div className="mt-8 flex flex-col items-center gap-2">
-      <p className="text-xs uppercase tracking-[0.15em] text-foreground/30">Síguenos</p>
-      <div className="flex items-center justify-center gap-4">
+    <div className="mt-10 mb-6 flex flex-col items-center gap-2.5">
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">Síguenos</p>
+      <div className="flex items-center justify-center gap-3">
         {instagramUrl && (
           <a
             href={instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
             title="Síguenos en Instagram"
-            className="flex size-9 items-center justify-center rounded-full border border-surface-border text-foreground/50 transition-colors hover:border-gold-500/50 hover:text-gold-300"
+            className="flex size-9 items-center justify-center rounded-full border border-border bg-white text-muted shadow-xs transition-colors hover:border-primary hover:text-primary hover:bg-surface-2"
           >
             <InstagramIcon className="size-4" />
           </a>
@@ -50,7 +50,7 @@ export function SocialFooter() {
             target="_blank"
             rel="noopener noreferrer"
             title="Escríbenos por WhatsApp"
-            className="flex size-9 items-center justify-center rounded-full border border-surface-border text-foreground/50 transition-colors hover:border-gold-500/50 hover:text-gold-300"
+            className="flex size-9 items-center justify-center rounded-full border border-border bg-white text-muted shadow-xs transition-colors hover:border-primary hover:text-primary hover:bg-surface-2"
           >
             <WhatsAppIcon className="size-4" />
           </a>

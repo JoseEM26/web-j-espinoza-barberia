@@ -75,36 +75,36 @@ export default function AdminUserDetailPage() {
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
         <Link
           href="/admin"
-          className="flex items-center gap-1 text-sm text-foreground/50 hover:text-gold-200"
+          className="flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-primary"
         >
           <ArrowLeft className="h-4 w-4" /> Volver a clientes
         </Link>
 
         {!detail ? (
           <div className="flex flex-col gap-4">
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-56 w-full" />
+            <Skeleton className="h-32 w-full rounded-2xl" />
+            <Skeleton className="h-56 w-full rounded-2xl" />
           </div>
         ) : (
           <>
-            <Card>
-              <CardContent className="flex flex-col gap-4 p-6">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="size-12">
+            <Card className="border-border bg-white shadow-sm shadow-[#7A4A2B]/[0.04]">
+              <CardContent className="flex flex-col gap-5 p-6">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <Avatar className="size-14 border border-border shadow-xs">
                       <AvatarImage src={detail.avatarBase64 ?? undefined} alt={detail.fullName} />
-                      <AvatarFallback className="text-lg">
+                      <AvatarFallback className="bg-sand-light/60 text-lg font-semibold text-primary">
                         {detail.fullName.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-display text-xl text-foreground">{detail.fullName}</p>
+                        <h1 className="font-display text-2xl font-semibold text-foreground">{detail.fullName}</h1>
                         <Badge variant={detail.isActive ? "success" : "destructive"}>
                           {detail.isActive ? "Activo" : "Bloqueado"}
                         </Badge>
                       </div>
-                      <p className="text-sm text-foreground/40">@{detail.username}</p>
+                      <p className="text-sm font-medium text-muted">@{detail.username}</p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -122,21 +122,21 @@ export default function AdminUserDetailPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
-                  <div className="rounded-md border border-surface-border bg-surface-2/50 px-3 py-2">
-                    <p className="text-xs text-foreground/40">Fecha de nacimiento</p>
-                    <p className="text-foreground/90">{formatBirthDate(detail.birthDate)}</p>
+                <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
+                  <div className="rounded-xl border border-border bg-surface-2 p-3.5">
+                    <p className="text-xs font-medium text-muted">Fecha de nacimiento</p>
+                    <p className="mt-0.5 font-semibold text-foreground">{formatBirthDate(detail.birthDate)}</p>
                   </div>
-                  <div className="rounded-md border border-surface-border bg-surface-2/50 px-3 py-2">
-                    <p className="text-xs text-foreground/40">Cliente desde</p>
-                    <p className="text-foreground/90">
-                      {format(new Date(detail.createdAt), "d MMM yyyy", { locale: es })}
+                  <div className="rounded-xl border border-border bg-surface-2 p-3.5">
+                    <p className="text-xs font-medium text-muted">Cliente desde</p>
+                    <p className="mt-0.5 font-semibold text-foreground">
+                      {format(new Date(detail.createdAt), "d 'de' MMMM, yyyy", { locale: es })}
                     </p>
                   </div>
                 </div>
 
                 {!detail.isActive && detail.blockedReason && (
-                  <div className="rounded-md border border-red-900/50 bg-red-950/30 px-3 py-2 text-sm text-red-300">
+                  <div className="rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm font-medium text-red-800">
                     Bloqueado{detail.blockedBy && ` por ${detail.blockedBy.fullName}`}. Motivo:{" "}
                     {detail.blockedReason}
                   </div>
@@ -146,8 +146,8 @@ export default function AdminUserDetailPage() {
 
             {card && <LoyaltyCard card={card} />}
 
-            <div className="flex items-center justify-between">
-              <h2 className="font-display text-lg text-gold-100">Historial de cortes</h2>
+            <div className="flex items-center justify-between pt-2">
+              <h2 className="font-display text-xl font-semibold text-foreground">Historial de cortes</h2>
               <AddCutDialog clientId={detail.id} clientName={detail.fullName} onAdded={load} />
             </div>
 
@@ -159,7 +159,7 @@ export default function AdminUserDetailPage() {
                 onChanged={load}
               />
             ) : (
-              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-24 w-full rounded-2xl" />
             )}
           </>
         )}

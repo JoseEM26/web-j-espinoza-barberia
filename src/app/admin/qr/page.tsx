@@ -15,8 +15,8 @@ export default function AdminQrPage() {
       <AppHeader />
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
         <div>
-          <p className="font-elegant text-2xl italic text-gold-200">Código QR</p>
-          <p className="text-sm text-foreground/50">
+          <h1 className="font-display text-2xl font-semibold italic text-primary">Código QR</h1>
+          <p className="mt-1 text-sm text-muted">
             Imprímelo y pégalo en la barbería para que tus clientes escaneen e ingresen directo.
           </p>
         </div>

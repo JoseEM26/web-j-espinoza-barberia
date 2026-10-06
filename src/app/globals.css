@@ -1,23 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050403;
-  --foreground: #f5f1e6;
+  color-scheme: light;
 
-  --surface: #0e0c09;
-  --surface-2: #171310;
-  --surface-border: #2a231a;
+  /* Espinoza Cafe Claro tokens */
+  --background: #FAF7F3;
+  --foreground: #2A1D14;
 
-  --gold-50: #fbf4e2;
-  --gold-100: #f4e4b8;
-  --gold-200: #ecd28d;
-  --gold-300: #e2bd66;
-  --gold-400: #d3a53f;
-  --gold-500: #c1902e;
-  --gold-600: #9c7322;
-  --gold-700: #7a591b;
-  --gold-800: #5c4315;
-  --gold-900: #3d2d0e;
+  --surface: #FFFFFF;
+  --surface-2: #FAF7F3;
+  --surface-border: #EADFD3;
+  --border: #EADFD3;
+
+  /* Primary coffee and brand palette */
+  --primary: #7A4A2B;
+  --primary-hover: #5E3820;
+  --secondary: #B08968;
+  --sand: #D9B99B;
+  --sand-light: #EADFD3;
+  --sand-muted: #FAF7F3;
+  --muted: #8A7868;
+  --dark: #2A1D14;
+
+  /* Brown scale 50..900 */
+  --brown-50: #FAF7F3;
+  --brown-100: #F3ECE4;
+  --brown-200: #EADFD3;
+  --brown-300: #D9B99B;
+  --brown-400: #B08968;
+  --brown-500: #946343;
+  --brown-600: #7A4A2B;
+  --brown-700: #5E3820;
+  --brown-800: #432715;
+  --brown-900: #2A1D14;
+
+  /* Legacy remapped tokens to ensure unmigrated pages stay coherent in light mode */
+  --gold-50: #FAF7F3;
+  --gold-100: #2A1D14;
+  --gold-200: #7A4A2B;
+  --gold-300: #7A4A2B;
+  --gold-400: #B08968;
+  --gold-500: #7A4A2B;
+  --gold-600: #5E3820;
+  --gold-700: #432715;
+  --gold-800: #EADFD3;
+  --gold-900: #2A1D14;
 }
 
 @theme inline {
@@ -27,7 +54,29 @@
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-surface-border: var(--surface-border);
+  --color-border: var(--border);
 
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-sand: var(--sand);
+  --color-sand-light: var(--sand-light);
+  --color-sand-muted: var(--sand-muted);
+  --color-muted: var(--muted);
+  --color-dark: var(--dark);
+
+  --color-brown-50: var(--brown-50);
+  --color-brown-100: var(--brown-100);
+  --color-brown-200: var(--brown-200);
+  --color-brown-300: var(--brown-300);
+  --color-brown-400: var(--brown-400);
+  --color-brown-500: var(--brown-500);
+  --color-brown-600: var(--brown-600);
+  --color-brown-700: var(--brown-700);
+  --color-brown-800: var(--brown-800);
+  --color-brown-900: var(--brown-900);
+
+  /* Legacy compatibility aliases */
   --color-gold-50: var(--gold-50);
   --color-gold-100: var(--gold-100);
   --color-gold-200: var(--gold-200);
@@ -39,45 +88,60 @@
   --color-gold-800: var(--gold-800);
   --color-gold-900: var(--gold-900);
 
+  /* Brand namespace support matching design prototypes */
+  --color-brand-primary: var(--primary);
+  --color-brand-hover: var(--primary-hover);
+  --color-brand-secondary: var(--secondary);
+  --color-brand-sand: var(--sand);
+  --color-brand-border: var(--border);
+  --color-brand-dark: var(--dark);
+  --color-brand-muted: var(--muted);
+  --color-brand-bg-light: var(--background);
+
   --font-display: var(--font-playfair);
-  --font-elegant: var(--font-cormorant);
-  --font-sans: var(--font-inter);
+  --font-headline: var(--font-playfair);
+  --font-elegant: var(--font-playfair);
+  --font-sans: var(--font-manrope);
+  --font-body: var(--font-manrope);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
 }
 
 ::selection {
-  background: var(--gold-600);
-  color: #0a0806;
+  background: var(--sand);
+  color: var(--dark);
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--gold-800) var(--surface);
+  scrollbar-color: var(--sand-light) var(--background);
 }
 *::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 *::-webkit-scrollbar-track {
-  background: var(--surface);
+  background: var(--background);
 }
 *::-webkit-scrollbar-thumb {
-  background: var(--gold-800);
-  border-radius: 999px;
+  background: var(--sand-light);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--sand);
 }
 
 .bg-vignette {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(211, 165, 63, 0.09), transparent 60%),
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(217, 185, 155, 0.22), transparent 60%),
     var(--background);
 }
 
 .text-gradient-gold {
-  background: linear-gradient(135deg, var(--gold-200), var(--gold-500) 60%, var(--gold-300));
+  background: linear-gradient(135deg, var(--primary), var(--secondary) 60%, var(--primary));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

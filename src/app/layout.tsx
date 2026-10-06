@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Cormorant_Garamond, Inter } from "next/font/google";
+import { Playfair_Display, Manrope } from "next/font/google";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/contexts/auth-context";
 import "./globals.css";
@@ -7,23 +7,16 @@ import "./globals.css";
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
 });
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const inter = Inter({
-  variable: "--font-inter",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "JEspinoza Barbershop",
-  description: "Tarjeta de fidelidad y turnos de JEspinoza Barbershop.",
+  title: "Jota Espinoza",
+  description: "Barbería Jota Espinoza — Tarjeta de fidelidad y turnos.",
 };
 
 export default function RootLayout({
@@ -34,18 +27,19 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${playfair.variable} ${cormorant.variable} ${inter.variable} h-full antialiased`}
+      className={`${playfair.variable} ${manrope.variable} h-full antialiased`}
+      style={{ colorScheme: "light" }}
     >
       <body className="bg-vignette min-h-full flex flex-col overflow-x-hidden font-sans text-foreground">
         <AuthProvider>{children}</AuthProvider>
         <Toaster
-          theme="dark"
+          theme="light"
           position="top-center"
           toastOptions={{
             style: {
-              background: "var(--surface-2)",
+              background: "var(--surface)",
               color: "var(--foreground)",
-              border: "1px solid var(--surface-border)",
+              border: "1px solid var(--border)",
             },
           }}
         />
