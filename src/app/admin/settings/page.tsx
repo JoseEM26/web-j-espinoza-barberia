@@ -76,16 +76,16 @@ export default function AdminSettingsPage() {
       <AppHeader />
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
         <div>
-          <p className="font-elegant text-2xl italic text-gold-200">Configuración</p>
-          <p className="text-sm text-foreground/50">
+          <h1 className="font-display text-2xl font-semibold italic text-primary">Configuración</h1>
+          <p className="mt-1 text-sm text-muted">
             Ajusta las reglas de la tarjeta de fidelidad y los textos del negocio.
           </p>
         </div>
 
-        <Card>
+        <Card className="border-border bg-white shadow-sm shadow-[#7A4A2B]/[0.04]">
           <CardHeader>
-            <CardTitle className="text-base">Datos del negocio</CardTitle>
-            <CardDescription>Todo aquí es editable, nada queda fijo en el código.</CardDescription>
+            <CardTitle className="font-display text-lg font-semibold text-foreground">Datos del negocio</CardTitle>
+            <CardDescription className="text-sm text-muted">Todo aquí es editable, nada queda fijo en el código.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -93,7 +93,7 @@ export default function AdminSettingsPage() {
                 <Label htmlFor="businessName">Nombre del negocio</Label>
                 <Input id="businessName" maxLength={60} {...register("businessName")} />
                 {errors.businessName && (
-                  <p className="text-xs text-red-400">{errors.businessName.message}</p>
+                  <p className="text-xs font-medium text-red-600">{errors.businessName.message}</p>
                 )}
               </div>
 
@@ -107,7 +107,7 @@ export default function AdminSettingsPage() {
                   {...register("cutsRequiredForReward", { valueAsNumber: true })}
                 />
                 {errors.cutsRequiredForReward && (
-                  <p className="text-xs text-red-400">{errors.cutsRequiredForReward.message}</p>
+                  <p className="text-xs font-medium text-red-600">{errors.cutsRequiredForReward.message}</p>
                 )}
               </div>
 
@@ -115,7 +115,7 @@ export default function AdminSettingsPage() {
                 <Label htmlFor="rewardDiscountLabel">Mensaje de corte gratis por lealtad</Label>
                 <Textarea id="rewardDiscountLabel" maxLength={150} {...register("rewardDiscountLabel")} />
                 {errors.rewardDiscountLabel && (
-                  <p className="text-xs text-red-400">{errors.rewardDiscountLabel.message}</p>
+                  <p className="text-xs font-medium text-red-600">{errors.rewardDiscountLabel.message}</p>
                 )}
               </div>
 
@@ -123,7 +123,7 @@ export default function AdminSettingsPage() {
                 <Label htmlFor="birthdayDiscountLabel">Mensaje de descuento de cumpleaños</Label>
                 <Textarea id="birthdayDiscountLabel" maxLength={150} {...register("birthdayDiscountLabel")} />
                 {errors.birthdayDiscountLabel && (
-                  <p className="text-xs text-red-400">{errors.birthdayDiscountLabel.message}</p>
+                  <p className="text-xs font-medium text-red-600">{errors.birthdayDiscountLabel.message}</p>
                 )}
               </div>
 
@@ -138,15 +138,15 @@ export default function AdminSettingsPage() {
                   {...register("cutPrice", { valueAsNumber: true })}
                 />
                 {errors.cutPrice && (
-                  <p className="text-xs text-red-400">{errors.cutPrice.message}</p>
+                  <p className="text-xs font-medium text-red-600">{errors.cutPrice.message}</p>
                 )}
-                <p className="text-xs text-foreground/40">
+                <p className="text-xs text-muted">
                   Es el tope para cuánto se puede registrar como pagado en un corte fiado.
                 </p>
               </div>
 
-              <Separator />
-              <p className="text-xs uppercase tracking-[0.15em] text-gold-300/70">
+              <Separator className="bg-border" />
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
                 Redes sociales
               </p>
 
@@ -159,7 +159,7 @@ export default function AdminSettingsPage() {
                   {...register("instagramUrl")}
                 />
                 {errors.instagramUrl && (
-                  <p className="text-xs text-red-400">{errors.instagramUrl.message}</p>
+                  <p className="text-xs font-medium text-red-600">{errors.instagramUrl.message}</p>
                 )}
               </div>
 
@@ -172,9 +172,9 @@ export default function AdminSettingsPage() {
                   {...register("whatsappNumber")}
                 />
                 {errors.whatsappNumber && (
-                  <p className="text-xs text-red-400">{errors.whatsappNumber.message}</p>
+                  <p className="text-xs font-medium text-red-600">{errors.whatsappNumber.message}</p>
                 )}
-                <p className="text-xs text-foreground/40">
+                <p className="text-xs text-muted">
                   Incluye el código de país. Los clientes lo verán como un botón directo a WhatsApp.
                 </p>
               </div>

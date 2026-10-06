@@ -48,7 +48,11 @@ export default function ProfilePage() {
     try {
       setAvatar(await fileToBase64(file));
     } catch (error) {
-      toast.error(error instanceof FileTooLargeError ? error.message : "No se pudo leer la imagen.");
+      toast.error(
+        error instanceof FileTooLargeError
+          ? error.message
+          : "No se pudo leer la imagen.",
+      );
     } finally {
       e.target.value = "";
     }
@@ -60,39 +64,57 @@ export default function ProfilePage() {
       await refresh();
       toast.success("Perfil actualizado.");
       setAvatar(undefined);
-      reset({ fullName: values.fullName, currentPassword: "", newPassword: "", confirmNewPassword: "" });
+      reset({
+        fullName: values.fullName,
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      });
     } catch (error) {
-      toast.error(error instanceof ApiClientError ? error.message : "No se pudo actualizar tu perfil.");
+      toast.error(
+        error instanceof ApiClientError
+          ? error.message
+          : "No se pudo actualizar tu perfil.",
+      );
     }
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col">
+    <div className="flex min-h-full flex-1 flex-col bg-[#FAF7F3]">
       <AppHeader />
-      <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
+      <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
         <div>
-          <p className="font-elegant text-2xl italic text-gold-200">Mi perfil</p>
-          <p className="text-sm text-foreground/50">
+          <h1 className="font-display text-2xl font-bold italic text-primary">
+            Mi perfil
+          </h1>
+          <p className="text-xs sm:text-sm text-muted">
             Puedes actualizar tu foto, nombre y contraseña.
           </p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Datos de la cuenta</CardTitle>
+        {/* Account Data Card */}
+        <Card className="rounded-2xl border border-border bg-white shadow-2xs">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm sm:text-base font-bold text-foreground">
+              Datos de la cuenta
+            </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4 text-sm">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <Avatar className="size-16">
-                  <AvatarImage src={avatarSrc ?? undefined} alt={user.fullName} />
-                  <AvatarFallback className="text-lg">
+                <Avatar className="size-16 ring-2 ring-border shadow-2xs">
+                  <AvatarImage
+                    src={avatarSrc ?? undefined}
+                    alt={user.fullName}
+                  />
+                  <AvatarFallback className="font-display text-lg text-primary">
                     {user.fullName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <label
                   htmlFor="avatar"
-                  className="absolute -bottom-1 -right-1 flex size-6 cursor-pointer items-center justify-center rounded-full border border-gold-600/50 bg-surface-2 text-gold-200 hover:bg-surface"
+                  className="absolute -bottom-1 -right-1 flex size-6.5 cursor-pointer items-center justify-center rounded-full border border-sand bg-white text-primary shadow-xs hover:bg-surface-2 transition-colors"
+                  title="Cambiar foto de perfil"
                 >
                   <Camera className="size-3.5" />
                 </label>
@@ -110,40 +132,45 @@ export default function ProfilePage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setAvatar(null)}
-                  className="text-foreground/40 hover:text-red-400"
+                  className="text-muted hover:text-red-600 gap-1.5"
                 >
-                  <X /> Quitar foto
+                  <X className="size-4" /> Quitar foto
                 </Button>
               )}
             </div>
 
-            <div className="flex justify-between">
-              <span className="text-foreground/50">Usuario</span>
-              <span className="text-foreground/90">@{user.username}</span>
+            <div className="flex items-center justify-between border-t border-border/60 pt-3">
+              <span className="text-xs sm:text-sm text-muted">Usuario</span>
+              <span className="text-xs sm:text-sm font-medium text-foreground">
+                @{user.username}
+              </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-foreground/50">Fecha de nacimiento</span>
-              <span className="text-foreground/90">{formatBirthDate(user.birthDate)}</span>
+            <div className="flex items-center justify-between border-t border-border/60 pt-3">
+              <span className="text-xs sm:text-sm text-muted">Fecha de nacimiento</span>
+              <span className="text-xs sm:text-sm font-medium text-foreground">
+                {formatBirthDate(user.birthDate)}
+              </span>
             </div>
-            <p className="text-xs text-foreground/30">
-              El usuario y la fecha de nacimiento solo puede modificarlos el administrador.
+            <p className="rounded-lg bg-surface-2 p-2.5 text-[11px] text-muted">
+              El nombre de usuario y la fecha de nacimiento solo pueden ser modificados por el administrador.
             </p>
           </CardContent>
         </Card>
 
-        <Card>
+        {/* Edit Form Card */}
+        <Card className="rounded-2xl border border-border bg-white shadow-2xs">
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="fullName">Nombre completo</Label>
                 <Input id="fullName" maxLength={80} {...register("fullName")} />
                 {errors.fullName && (
-                  <p className="text-xs text-red-400">{errors.fullName.message}</p>
+                  <p className="text-xs text-red-600">{errors.fullName.message}</p>
                 )}
               </div>
 
               <Separator />
-              <p className="text-xs uppercase tracking-[0.15em] text-gold-300/70">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted">
                 Cambiar contraseña (opcional)
               </p>
 
@@ -156,7 +183,9 @@ export default function ProfilePage() {
                   {...register("currentPassword")}
                 />
                 {errors.currentPassword && (
-                  <p className="text-xs text-red-400">{errors.currentPassword.message}</p>
+                  <p className="text-xs text-red-600">
+                    {errors.currentPassword.message}
+                  </p>
                 )}
               </div>
 
@@ -169,7 +198,7 @@ export default function ProfilePage() {
                   {...register("newPassword")}
                 />
                 {errors.newPassword && (
-                  <p className="text-xs text-red-400">{errors.newPassword.message}</p>
+                  <p className="text-xs text-red-600">{errors.newPassword.message}</p>
                 )}
               </div>
 
@@ -182,11 +211,13 @@ export default function ProfilePage() {
                   {...register("confirmNewPassword")}
                 />
                 {errors.confirmNewPassword && (
-                  <p className="text-xs text-red-400">{errors.confirmNewPassword.message}</p>
+                  <p className="text-xs text-red-600">
+                    {errors.confirmNewPassword.message}
+                  </p>
                 )}
               </div>
 
-              <Button type="submit" size="lg" disabled={isSubmitting} className="mt-2">
+              <Button type="submit" size="lg" disabled={isSubmitting} className="mt-2 w-full">
                 {isSubmitting && <Loader2 className="animate-spin" />}
                 Guardar cambios
               </Button>

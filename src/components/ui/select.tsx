@@ -22,8 +22,8 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       className={cn(
-        "flex h-10 w-full items-center justify-between gap-2 rounded-md border border-surface-border bg-surface-2/60 px-3 py-2 text-sm text-foreground outline-none",
-        "focus-visible:border-gold-400/70 focus-visible:ring-2 focus-visible:ring-gold-400/20",
+        "flex h-10 w-full items-center justify-between gap-2 rounded-xl border border-border bg-white px-3.5 py-2 text-sm text-foreground outline-none shadow-xs transition-colors",
+        "focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20",
         "disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
         className,
       )}
@@ -31,7 +31,7 @@ function SelectTrigger({
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="h-4 w-4 text-gold-300/70" />
+        <ChevronDown className="h-4 w-4 text-muted" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -49,7 +49,7 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-surface-border bg-surface shadow-xl shadow-black/50",
+          "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-xl border border-border bg-white shadow-lg shadow-[#7A4A2B]/[0.08]",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
           className,
@@ -71,15 +71,15 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm text-foreground/90 outline-none",
-        "data-[highlighted]:bg-gold-500/10 data-[highlighted]:text-gold-100",
+        "relative flex w-full cursor-pointer select-none items-center rounded-lg py-2 pl-8 pr-2 text-sm text-foreground outline-none transition-colors",
+        "data-[highlighted]:bg-primary/10 data-[highlighted]:text-primary",
         className,
       )}
       {...props}
     >
       <span className="absolute left-2 flex size-4 items-center justify-center">
         <SelectPrimitive.ItemIndicator>
-          <Check className="h-4 w-4 text-gold-400" />
+          <Check className="h-4 w-4 text-primary" />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

@@ -52,8 +52,8 @@ export default function AdminCutsPage() {
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="font-elegant text-2xl italic text-gold-200">Todos los cortes</p>
-            <p className="text-sm text-foreground/50">
+            <h1 className="font-display text-2xl font-semibold italic text-primary">Todos los cortes</h1>
+            <p className="mt-1 text-sm text-muted">
               Historial completo de la barbería.
               {pagination && ` ${pagination.total} en total.`}
             </p>
@@ -72,9 +72,9 @@ export default function AdminCutsPage() {
 
         {!cuts ? (
           <div className="flex flex-col gap-3">
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full rounded-2xl" />
+            <Skeleton className="h-20 w-full rounded-2xl" />
+            <Skeleton className="h-20 w-full rounded-2xl" />
           </div>
         ) : (
           <>
@@ -95,7 +95,7 @@ export default function AdminCutsPage() {
                 >
                   <ChevronLeft />
                 </Button>
-                <span className="text-sm text-foreground/50">
+                <span className="text-sm font-medium text-muted">
                   Página {pagination.page} de {pagination.totalPages}
                 </span>
                 <Button

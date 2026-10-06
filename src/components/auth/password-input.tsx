@@ -23,7 +23,8 @@ export const PasswordInput = React.forwardRef<
         type="button"
         tabIndex={-1}
         onClick={() => setVisible((v) => !v)}
-        className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center text-foreground/40 hover:text-gold-300"
+        aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
+        className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center text-muted hover:text-primary transition-colors focus:outline-none focus-visible:text-primary"
       >
         {visible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
       </button>

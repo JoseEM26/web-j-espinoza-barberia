@@ -51,7 +51,7 @@ export function PaymentAmountPicker({
         )}
       </div>
       <div className="flex items-center gap-2">
-        <span className="text-xs text-foreground/40">Monto exacto:</span>
+        <span className="text-xs text-muted">Monto exacto:</span>
         <Input
           type="number"
           min={0}
@@ -65,7 +65,7 @@ export function PaymentAmountPicker({
           className={cn("h-8 w-28")}
         />
         {cutPrice != null && (
-          <span className="text-xs text-foreground/40">de S/ {cutPrice.toFixed(2)}</span>
+          <span className="text-xs text-muted">de S/ {cutPrice.toFixed(2)}</span>
         )}
       </div>
     </div>
